@@ -1,27 +1,31 @@
 package main.id;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.io.File;
 
-import javax.swing.JDialog;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.border.BevelBorder;
 
 import org.apache.commons.vfs2.FileChangeEvent;
 import org.apache.commons.vfs2.FileListener;
+
 
 public class CustomFileListener implements FileListener {
 
 	private long startTime = 0;
 	private final StopwatchListener sl = new StopwatchListener();
-	private final JTextField tf = new JTextField(3);
+	private final JLabel tf = new JLabel("00:00:00");
 	private final Timer t = new Timer(1000, sl);
 
 	public void fileChanged(FileChangeEvent arg0) throws Exception {
@@ -41,59 +45,54 @@ public class CustomFileListener implements FileListener {
 			if (code.startsWith("AGENT_AVAILABILITY_STATE") && (status.equalsIgnoreCase("PNB")
 					|| status.equalsIgnoreCase("Lunch") || status.equalsIgnoreCase("Start of shift"))) {
 
-//				JFrame frame = new JFrame("Ini Disini");
-//				frame.pack();
-//				Component parent = null;
-//				frame.setLocationRelativeTo(parent);
-//				frame.setVisible(true);
-//				frame.setAlwaysOnTop(true);
-//
-//				startTime = System.currentTimeMillis();
+				startTime = System.currentTimeMillis();
+				JFrame frame = new JFrame("Ini Disini");
+				frame.setPreferredSize(getInitDimention());
+				
+				JPanel container = new JPanel();
+			    container.setBorder(BorderFactory.createSoftBevelBorder(BevelBorder.RAISED));
+				container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+
 //				JPanel panel1 = new JPanel();
-//				tf.setHorizontalAlignment(JTextField.RIGHT);
-//				tf.setEditable(false);
-//				t.start();
-//				panel1.add(tf);
-//				frame.add(panel1);
-//
-//				JOptionPane.showMessageDialog(frame, "Status changed to : " + status
-//						+ "\nClose this window when you want to switch back to Available");
-//				frame.setVisible(false);
+//				JPanel panel2 = new JPanel();
+				JPanel panel3 = new JPanel();
+				JButton button1 = new JButton();
+				
+				JLabel text1 = new JLabel();
+				text1.setAlignmentX(Component.LEFT_ALIGNMENT);
+				text1.setText("Status changed to : " + status);
+//				panel1.add(text1);
 
-				String message = "Status changed to : " + status
-						+ "\nClose this window when you want to switch back to Available";
-
-				final JOptionPane msg = new JOptionPane(message, JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
-				msg.
-				final JDialog dlg = msg.createDialog("Ini yang ini");
-
-				msg.setInitialSelectionValue(JOptionPane.OK_OPTION);
-				dlg.setAlwaysOnTop(true);
-				dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-				dlg.addComponentListener(new ComponentAdapter() {
+				JLabel text2 = new JLabel();
+				text2.setAlignmentX(Component.LEFT_ALIGNMENT);
+				text2.setText("Close this window when you want to switch back to Available");
+//				panel2.add(text2);
+				
+				panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
+				tf.setAlignmentX(Component.LEFT_ALIGNMENT);
+				panel3.add(tf);
+				
+				button1.setAlignmentX(Component.LEFT_ALIGNMENT);
+				button1.setText("OK");
+				button1.addActionListener(new ActionListener() {
+					
 					@Override
-					public void componentShown(ComponentEvent e) {
-						super.componentShown(e);
-						final Timer t = new Timer(1000, new ActionListener() {
-
-							private long count;
-
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								count = System.currentTimeMillis() - startTime;
-								long second = (count / 1000) % 60;
-								long minute = (count / (1000 * 60)) % 60;
-								long hour = (count / (1000 * 60 * 60)) % 24;
-
-								String time = String.format("%02d:%02d:%02d", hour, minute, second);
-								tf.setText(String.valueOf(time));
-							}
-
-						});
-						t.start();
+					public void actionPerformed(ActionEvent e) {
+						frame.dispose();
 					}
 				});
-				dlg.setVisible(true);
+
+				container.add(text1);
+				container.add(text2);
+				container.add(panel3);
+				container.add(button1);
+				
+				frame.pack();
+				frame.setLocationRelativeTo(null);
+				frame.setAlwaysOnTop(true);
+				frame.add(container);
+				frame.setVisible(true);
+				t.start();
 
 			}
 		}
@@ -124,5 +123,14 @@ public class CustomFileListener implements FileListener {
 			String time = String.format("%02d:%02d:%02d", hour, minute, second);
 			tf.setText(String.valueOf(time));
 		}
+	}
+	
+	private Dimension getInitDimention() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		int height = screenSize.height * 1 / 6;
+		int width = screenSize.width * 1 / 4;
+		
+		return new Dimension(width, height);
 	}
 }
