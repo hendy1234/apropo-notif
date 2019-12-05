@@ -23,6 +23,11 @@ public class Main {
 
 					String logFolder = JOptionPane.showInputDialog(
 							"Please input path and file name to your apropo log file:\nEx: C:/Users/rdiana2/AppData/Local/Enghouse/Agent/User1449133621/Logs/RDiana2@id0030cim01.txt");
+
+					/** TODO */
+					logFolder = "/home/hendy/Desktop/ada waktu rapikan/project_apropo/test.txt";
+					/** TODO */
+					
 					FileObject listendir = fsManager.resolveFile(logFolder);
 //	    					.resolveFile(usersHome + "/Desktop/projectIpt/test/test.txt");
 //	    					.resolveFile("C:/Users/Rita Diana/Desktop/projectIpt/test/test.txt");
